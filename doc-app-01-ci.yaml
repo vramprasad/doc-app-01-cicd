@@ -1,0 +1,29 @@
+trigger: none
+
+pool:
+  name: RPLocalPool
+
+stages:
+  - stage: BuildApp
+    displayName: 'Build Springboot application'
+    jobs:
+      - job: BuildJob
+        displayName: 'JAVA Build job'
+        steps:
+        - task: Maven@4
+          displayName: 'Build JAR'
+          inputs:
+            goals: 'clean package'
+            publishJUnitResults: false
+        - task: CopyFiles@2
+          displayName: 'Copy JAR'
+          inputs:
+            SourceFolder: target
+            Contents: 'doc*.jar'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        - task: PublishPipelineArtifact@1
+          displayName: 'Publish JAR'
+          inputs:
+            targetPath: '$(Build.ArtifactStagingDirectory)'
+            artifact: 'deploy_jar'
+ 
