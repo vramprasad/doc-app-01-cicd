@@ -19,9 +19,10 @@ stages:
           displayName: 'Download JAR'
           inputs:
             buildType: 'specific'
-            project: 'Infra'
+            pipeline: 'doc-app-01-ci'
             definition: '16'
-            buildVersionToDownload: 'latest'
+            buildVersionToDownload: 'specific'
+            runId: '${{ parameters.Build }}'
             artifactName: 'deploy_jar'
             itemPattern: '**/doc*.jar'
             targetPath: '$(Pipeline.Workspace)'
