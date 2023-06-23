@@ -1,0 +1,38 @@
+trigger: none
+
+pool:
+  name: RPLocalPool
+
+parameters:
+  - name: Build
+    displayName: 'Build ID'
+    type: string
+    default: "20230130.1"
+stages:
+  - stage: DeployAppDev
+    displayName: 'DEV - Deploy App'
+    jobs:
+      - job: DeployAppJob
+        displayName: 'Deploy JAVA App to AppService'
+        steps:
+        - task: DownloadPipelineArtifact@2  
+          displayName: 'Download JAR'
+          inputs:
+            buildType: 'specific'
+            project: '{project id}'
+            definition: '{pipeline id}'
+            buildVersionToDownload: 'specific'
+            pipelineId: '${{ parameters.Build }}'
+            artifactName: 'deploy_jar'
+            itemPattern: '**/doc*.jar'
+            targetPath: '$(Pipeline.Workspace)'
+        - task: AzureRmWebAppDeployment@4
+          displayName: 'Deploy JAR File'
+          inputs:
+            azureSubscription: 'rp0041-rg'
+            ResourceGroupName: 'rp0041-rg'
+            appType: 'webAppLinux'
+            WebAppName: 'docapp-01-d-as'
+            packageForLinux: '$(Pipeline.Workspace)/doc*.jar'
+            RuntimeStack: 'JAVA|11-java11'
+            StartupCommand: 'java -jar /home/site/wwwroot/doc*.jar'
