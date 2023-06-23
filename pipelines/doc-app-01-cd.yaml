@@ -7,7 +7,7 @@ parameters:
   - name: Build
     displayName: 'Build ID'
     type: string
-    default: "20230130.1"
+    default: "20230623.1"
 stages:
   - stage: DeployAppDev
     displayName: 'DEV - Deploy App'
@@ -19,14 +19,15 @@ stages:
           displayName: 'Download JAR'
           inputs:
             buildType: 'specific'
-            project: '{project id}'
-            definition: '{pipeline id}'
+            project: '$(System.TeamProjectId)'
+            definition: '16'
             buildVersionToDownload: 'specific'
             pipelineId: '${{ parameters.Build }}'
             artifactName: 'deploy_jar'
             itemPattern: '**/doc*.jar'
             targetPath: '$(Pipeline.Workspace)'
         - task: AzureRmWebAppDeployment@4
+          enabled: false
           displayName: 'Deploy JAR File'
           inputs:
             azureSubscription: 'rp0041-rg'
