@@ -19,7 +19,7 @@ stages:
           displayName: 'Download JAR'
           inputs:
             buildType: 'specific'
-            project: '$(System.TeamProjectId)'
+            project: 'Infra'
             definition: '16'
             buildVersionToDownload: 'latest'
             artifactName: 'deploy_jar'
